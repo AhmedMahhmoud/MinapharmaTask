@@ -9,17 +9,19 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class SignButton extends StatelessWidget {
   final AuthModel authModel;
   final AuthType authType;
+  final VoidCallback callBack;
   final GlobalKey<FormState> formKey;
   const SignButton(
       {required this.authModel,
-      required this.formKey,
+      required this.callBack,
       required this.authType,
+      required this.formKey,
       super.key});
 
   @override
   Widget build(BuildContext context) {
     final authProv =
-        BlocProvider.of<AuthenticationCubit>(context, listen: false);
+        BlocProvider.of<AuthenticationCubit>(context, listen: true);
     return BlocBuilder<AuthenticationCubit, AuthenticationState>(
       builder: (context, state) {
         if (state is AuthLoadingSignInState ||
@@ -39,11 +41,7 @@ class SignButton extends StatelessWidget {
                 if (!formKey.currentState!.validate()) {
                   return;
                 } else {
-                  if (authType == AuthType.signup) {
-                    await authProv.signUp(authModel);
-                  } else if (authType == AuthType.login) {
-                    await authProv.login(authModel);
-                  }
+                  callBack();
                 }
               },
             ),

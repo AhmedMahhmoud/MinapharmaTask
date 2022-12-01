@@ -9,12 +9,26 @@ import '../../../../Core/Shared/Methods/shared_methods.dart';
 import '../cubit/authentication_cubit.dart';
 import '../widgets/sign_button.dart';
 
-class SignInPage extends StatelessWidget {
-  final TextEditingController _email = TextEditingController();
-  final TextEditingController _password = TextEditingController();
-  final _formKey = GlobalKey<FormState>(debugLabel: "sign_in");
+class SignInPage extends StatefulWidget {
+  const SignInPage({super.key});
 
-  SignInPage({super.key});
+  @override
+  State<SignInPage> createState() => _SignInPageState();
+}
+
+class _SignInPageState extends State<SignInPage> {
+  final TextEditingController _email = TextEditingController();
+
+  final TextEditingController _password = TextEditingController();
+
+  final _formKey = GlobalKey<FormState>();
+  @override
+  void dispose() {
+    _email.dispose();
+    _password.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -90,10 +104,15 @@ class SignInPage extends StatelessWidget {
                         height: 20.h,
                       ),
                       SignButton(
-                          authModel: AuthModel(
-                              password: _password.text, username: _email.text),
-                          authType: AuthType.login,
-                          formKey: _formKey),
+                        authModel: AuthModel(
+                            password: _password.text, username: _email.text),
+                        authType: AuthType.login,
+                        formKey: _formKey,
+                        callBack: () {
+                          context.read<AuthenticationCubit>().login(AuthModel(
+                              username: _email.text, password: _password.text));
+                        },
+                      ),
                       SizedBox(
                         height: 20.h,
                       ),

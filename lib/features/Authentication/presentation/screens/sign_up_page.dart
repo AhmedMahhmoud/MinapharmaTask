@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -11,11 +9,23 @@ import 'package:pharmatask/features/Authentication/presentation/widgets/sign_sna
 import '../../data/model/auth_model.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class SignUpPage extends StatelessWidget {
+class SignUpPage extends StatefulWidget {
+  const SignUpPage({super.key});
+
+  @override
+  State<SignUpPage> createState() => _SignUpPageState();
+}
+
+class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController _email = TextEditingController();
   final TextEditingController _password = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  SignUpPage({super.key});
+  @override
+  void dispose() {
+    _email.dispose();
+    _password.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +38,6 @@ class SignUpPage extends StatelessWidget {
           listenWhen: (previous, current) => previous is AuthLoadingSignUpState,
           listener: (context, state) {
             if (state is ErrorAuthState) {
-              log("entered SignUpPage");
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                   content: SignSnackbar(
                 message: state.message,
@@ -100,9 +109,17 @@ class SignUpPage extends StatelessWidget {
                         height: 20.h,
                       ),
                       SignButton(
+                          callBack: () {
+                            context.read<AuthenticationCubit>().signUp(
+                                AuthModel(
+                                    username: _email.text,
+                                    password: _password.text));
+                          },
                           authType: AuthType.signup,
                           authModel: AuthModel(
-                              username: _email.text, password: _password.text),
+                            username: _email.text,
+                            password: _password.text,
+                          ),
                           formKey: _formKey),
                       SizedBox(
                         height: 20.h,
