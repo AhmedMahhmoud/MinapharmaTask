@@ -18,6 +18,7 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
+
   getLastLoggedUser() async {
     AuthDao authDao = AuthDao();
     return await authDao.retrieveLastOpenedUser();
@@ -52,12 +53,10 @@ class MyApp extends StatelessWidget {
                       ),
                     );
                   } else {
-                    if (snapshot.data == "") {
-                      return SignUpPage();
-                    } else if (snapshot.hasData) {
+                if (snapshot.hasData || snapshot.data!="") {
                       return DashboardPage(username: snapshot.data.toString());
                     }
-                    return SignUpPage();
+                    return const SignUpPage();
                   }
                 }),
           );

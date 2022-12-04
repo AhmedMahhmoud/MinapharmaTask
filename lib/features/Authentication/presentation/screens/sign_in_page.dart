@@ -1,13 +1,16 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'package:pharmatask/Core/enums/auth_enum.dart';
 import 'package:pharmatask/features/Authentication/data/model/auth_model.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pharmatask/features/Authentication/presentation/widgets/sign_snackbar.dart';
-import '../../../../Core/Shared/Methods/shared_methods.dart';
+
 import '../cubit/authentication_cubit.dart';
+import '../widgets/new_account_creation_button.dart';
 import '../widgets/sign_button.dart';
+import '../widgets/sign_form_field.dart';
 
 class SignInPage extends StatefulWidget {
   const SignInPage({super.key});
@@ -18,10 +21,9 @@ class SignInPage extends StatefulWidget {
 
 class _SignInPageState extends State<SignInPage> {
   final TextEditingController _email = TextEditingController();
-
+  final _formKey = GlobalKey<FormState>();
   final TextEditingController _password = TextEditingController();
 
-  final _formKey = GlobalKey<FormState>();
   @override
   void dispose() {
     _email.dispose();
@@ -34,7 +36,8 @@ class _SignInPageState extends State<SignInPage> {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-        body: BlocListener<AuthenticationCubit, AuthenticationState>(
+        body: 
+        BlocListener<AuthenticationCubit, AuthenticationState>(
           listenWhen: (previous, current) => previous is AuthLoadingSignInState,
           listener: (context, state) {
             if (state is ErrorAuthState) {
@@ -65,41 +68,18 @@ class _SignInPageState extends State<SignInPage> {
                 ),
                 Form(
                   key: _formKey,
-                  child: Column(
+                  child: 
+                  Column(
                     children: [
                       SizedBox(
                         height: 20.h,
                       ),
-                      TextFormField(
-                        controller: _email,
-                        validator: (value) {
-                          return SharedMethods.validate(value!, "Username");
-                        },
-                        decoration: InputDecoration(
-                          hintText: '  Enter your username',
-                          prefixIcon: const Icon(Icons.person),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10.w),
-                          ),
-                        ),
-                      ),
+                      FormFieldInput(controller: _email,authField: AuthFields.username,),
                       SizedBox(
                         height: 20.h,
                       ),
-                      TextFormField(
-                        controller: _password,
-                        validator: (value) {
-                          return SharedMethods.validate(value!, "Password");
-                        },
-                        obscureText: true,
-                        decoration: InputDecoration(
-                          prefixIcon: const Icon(Icons.lock),
-                          hintText: '  Enter your password',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                      ),
+
+                        FormFieldInput(controller: _password,authField: AuthFields.password,),
                       SizedBox(
                         height: 20.h,
                       ),
@@ -116,21 +96,7 @@ class _SignInPageState extends State<SignInPage> {
                       SizedBox(
                         height: 20.h,
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const AutoSizeText('Dont have an account yet?'),
-                          TextButton(
-                            onPressed: () {
-                              Navigator.pushReplacementNamed(
-                                  context, "sign_up");
-                            },
-                            child: const AutoSizeText(
-                              'Sign Up',
-                            ),
-                          ),
-                        ],
-                      ),
+                      const NewAccountCreationButton(),
                     ],
                   ),
                 )

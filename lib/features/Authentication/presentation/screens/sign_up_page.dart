@@ -9,6 +9,9 @@ import 'package:pharmatask/features/Authentication/presentation/widgets/sign_sna
 import '../../data/model/auth_model.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../widgets/already_registered_display.dart';
+import '../widgets/sign_form_field.dart';
+
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
 
@@ -18,8 +21,9 @@ class SignUpPage extends StatefulWidget {
 
 class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController _email = TextEditingController();
-  final TextEditingController _password = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  final TextEditingController _password = TextEditingController();
+
   @override
   void dispose() {
     _email.dispose();
@@ -75,36 +79,13 @@ class _SignUpPageState extends State<SignUpPage> {
                       SizedBox(
                         height: 20.h,
                       ),
-                      TextFormField(
-                        controller: _email,
-                        validator: (value) {
-                          return SharedMethods.validate(value!, "Username");
-                        },
-                        decoration: InputDecoration(
-                          hintText: '  Enter your username',
-                          prefixIcon: const Icon(Icons.person),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10.w),
-                          ),
-                        ),
-                      ),
+                         FormFieldInput(controller: _email,authField: AuthFields.username,),
+                   
                       SizedBox(
                         height: 20.h,
                       ),
-                      TextFormField(
-                        controller: _password,
-                        validator: (value) {
-                          return SharedMethods.validate(value!, "Password");
-                        },
-                        obscureText: true,
-                        decoration: InputDecoration(
-                          prefixIcon: const Icon(Icons.lock),
-                          hintText: '  Enter your password',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                      ),
+                           FormFieldInput(controller: _password,authField: AuthFields.password,),
+                  
                       SizedBox(
                         height: 20.h,
                       ),
@@ -124,21 +105,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       SizedBox(
                         height: 20.h,
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const AutoSizeText('Already registered?'),
-                          TextButton(
-                            onPressed: () {
-                              Navigator.pushReplacementNamed(
-                                  context, "sign_in");
-                            },
-                            child: const AutoSizeText(
-                              'Sign in',
-                            ),
-                          ),
-                        ],
-                      ),
+                      AlreadyRegistered(),
                     ],
                   ),
                 )
